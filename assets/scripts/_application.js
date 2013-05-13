@@ -39,7 +39,7 @@ Ball = (function() {
   Ball.prototype.init = function() {
     var self;
     self = this;
-    this.color = 'rgb(0, 102, 204)';
+    this.color = 'rgb(240, 240, 240)';
     this.size = 20;
     this.half = this.size / 2;
     this.position = {
@@ -49,7 +49,7 @@ Ball = (function() {
     this.minVelocity = 10;
     this.maxVelocity = 20;
     this.velocity = {
-      x: 8,
+      x: 3,
       y: 4
     };
     this.directionX = 'right';
@@ -59,14 +59,14 @@ Ball = (function() {
 
   Ball.prototype.detectCollisionWithPaddle = function() {
     var ballY, collision, paddleY;
-    if (this.directionX === 'left' && (this.position.x - this.half) <= playerOne.position.x + playerOne.width) {
+    if (this.directionX === 'left' && this.position.x <= playerOne.position.x + playerOne.width) {
       ballY = this.position.y;
       paddleY = playerOne.position.y;
       if (ballY >= paddleY && ballY <= (paddleY + playerOne.height)) {
         this.directionX = 'right';
         collision = true;
       }
-    } else if ((this.position.x + this.half) >= playerTwo.position.x) {
+    } else if ((this.position.x + this.size) >= playerTwo.position.x) {
       ballY = this.position.y;
       paddleY = playerTwo.position.y;
       if (ballY >= paddleY && ballY <= (paddleY + playerTwo.height)) {
@@ -83,10 +83,10 @@ Ball = (function() {
 
   Ball.prototype.detectCollisionWithCeilingOrFloor = function() {
     var collision;
-    if (this.directionY === 'up' && (this.position.y - this.half) <= 0) {
+    if (this.directionY === 'up' && this.position.y <= 0) {
       this.directionY = 'down';
       collision = true;
-    } else if ((this.position.y + this.half) >= canvas.height) {
+    } else if (this.position.y >= canvas.height - this.size) {
       this.directionY = 'up';
       collision = true;
     }
@@ -98,10 +98,7 @@ Ball = (function() {
 
   Ball.prototype.draw = function() {
     context.fillStyle = this.color;
-    context.beginPath();
-    context.arc(this.position.x, this.position.y, this.half, 0, Math.PI * 2, true);
-    context.closePath();
-    context.fill();
+    context.fillRect(this.position.x, this.position.y, this.size, this.size);
     return this;
   };
 
@@ -136,7 +133,7 @@ Paddle = (function() {
     var self;
     self = this;
     this.player = player;
-    this.color = 'rgb(51, 102, 0)';
+    this.color = 'rgb(240, 240, 240)';
     this.direction = false;
     this.width = 20;
     this.height = 150;

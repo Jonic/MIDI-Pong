@@ -6,7 +6,7 @@ class Paddle
 
 		this.player = player
 
-		this.color = 'rgb(51, 102, 0)'
+		this.color = 'rgb(240, 240, 240)'
 		this.direction = false
 
 		this.width = 20

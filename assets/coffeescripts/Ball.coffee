@@ -4,7 +4,7 @@ class Ball
 
 		self = this
 
-		this.color = 'rgb(0, 102, 204)'
+		this.color = 'rgb(240, 240, 240)'
 
 		this.size = 20
 		this.half = this.size / 2
@@ -17,7 +17,7 @@ class Ball
 		this.maxVelocity = 20
 
 		this.velocity =
-			x: 8
+			x: 3
 			y: 4
 
 		this.directionX = 'right'
@@ -27,14 +27,14 @@ class Ball
 
 	detectCollisionWithPaddle: ->
 
-		if this.directionX == 'left'and (this.position.x - this.half) <= playerOne.position.x + playerOne.width
+		if this.directionX == 'left' and this.position.x <= playerOne.position.x + playerOne.width
 			ballY = this.position.y
 			paddleY = playerOne.position.y
 
 			if ballY >= paddleY and ballY <= (paddleY + playerOne.height)
 				this.directionX = 'right'
 				collision = true
-		else if (this.position.x + this.half) >= playerTwo.position.x
+		else if (this.position.x + this.size) >= playerTwo.position.x
 			ballY = this.position.y
 			paddleY = playerTwo.position.y
 
@@ -51,10 +51,10 @@ class Ball
 
 	detectCollisionWithCeilingOrFloor: ->
 
-		if this.directionY == 'up' and (this.position.y - this.half) <= 0
+		if this.directionY == 'up' and this.position.y <= 0
 			this.directionY = 'down'
 			collision = true
-		else if (this.position.y + this.half) >= canvas.height
+		else if this.position.y >= canvas.height - this.size
 			this.directionY = 'up'
 			collision = true
 
@@ -66,11 +66,7 @@ class Ball
 	draw: ->
 
 		context.fillStyle = this.color
-
-		context.beginPath()
-		context.arc(this.position.x, this.position.y, this.half, 0, Math.PI * 2, true)
-		context.closePath()
-		context.fill()
+		context.fillRect(this.position.x, this.position.y, this.size, this.size)
 
 		@
 
