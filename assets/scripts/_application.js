@@ -5,7 +5,7 @@
 --------------------------------------------
 */
 
-var Ball, HeadsUp, Player, animationLoop, animationLoopId, ball, baseSize, calcSpeed, canvas, context, controlCallback, controller, delta, fpsOutput, headsUp, lastTime, playerOne, playerTwo, random, randomInteger;
+var Ball, HeadsUp, Player, animationLoop, animationLoopId, ball, baseSize, calcSpeed, canvas, context, controlCallback, controller, delta, fpsOutput, headsUp, lastTime, playerOne, playerTwo, pointsToWin, random, randomInteger;
 
 Ball = (function() {
 
@@ -119,7 +119,7 @@ Ball = (function() {
       this.updateScoreStates();
       this.init();
     }
-    if (playerOne.score === 3 || playerTwo === 3) {
+    if (playerOne.score === pointsToWin || playerTwo === pointsToWin) {
       console.log('GAME OVER');
       window.cancelAnimationFrame(animationLoopId);
     }
@@ -332,6 +332,8 @@ delta = 0;
 fpsOutput = document.querySelector('.fps');
 
 lastTime = 0;
+
+pointsToWin = 15;
 
 animationLoop = function(now) {
   var fps;

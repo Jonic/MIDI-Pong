@@ -1,6 +1,7 @@
 delta = 0
 fpsOutput = document.querySelector('.fps')
 lastTime = 0
+pointsToWin = 15
 
 animationLoop = (now) ->
 
