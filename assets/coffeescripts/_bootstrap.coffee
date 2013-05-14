@@ -1,7 +1,8 @@
-lastTime = 0
 delta = 0
+fpsOutput = document.querySelector('.fps')
+lastTime = 0
 
-animationLoop = (now = 0) ->
+animationLoop = (now) ->
 
 	delta = now - lastTime;
 	lastTime = now;
@@ -16,17 +17,12 @@ animationLoop = (now = 0) ->
 	playerOne.draw()
 	playerTwo.draw()
 
-	if gamePaused
-		window.setTimeout ->
-			gamePaused = false
+	ball.update()
+	headsUp.update()
+	playerOne.update()
+	playerTwo.update()
 
-			ball.update()
-			headsUp.update()
-			playerOne.update()
-			playerTwo.update()
-		, 2000
-
-	animationLoopId = window.requestAnimationFrame(animationLoop)
+	window.requestAnimationFrame(animationLoop)
 
 	return
 
@@ -34,15 +30,15 @@ calcSpeed = (speed) ->
 	return (speed * delta) * (60 / 1000)
 
 controlCallback = (t, a, controlIndex, value) ->
-	value /= 128
-
 	if controlIndex == 3  or controlIndex == 14
 		paddle = playerOne
 
 	if controlIndex == 11 or controlIndex == 22
 		paddle = playerTwo
 
-	paddle.newPositionY = -(value - 1)
+	if paddle
+		value /= 128
+		paddle.newPositionY = -(value - 1)
 
 	return
 
@@ -76,9 +72,4 @@ playerTwo.init(2)
 headsUp = new HeadsUp()
 headsUp.init()
 
-gamePaused = true
-animationLoopId = null
-
-fpsOutput = document.querySelector('.fps')
-
-animationLoop()
+animationLoopId = window.requestAnimationFrame(animationLoop)

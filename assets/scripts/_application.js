@@ -5,7 +5,7 @@
 --------------------------------------------
 */
 
-var Ball, HeadsUp, Player, animationLoop, animationLoopId, ball, baseSize, calcSpeed, canvas, context, controlCallback, controller, delta, fpsOutput, gamePaused, headsUp, lastTime, playerOne, playerTwo, random, randomInteger;
+var Ball, HeadsUp, Player, animationLoop, animationLoopId, ball, baseSize, calcSpeed, canvas, context, controlCallback, controller, delta, fpsOutput, headsUp, lastTime, playerOne, playerTwo, random, randomInteger;
 
 Ball = (function() {
 
@@ -50,8 +50,7 @@ Ball = (function() {
       }
     }
     if (collision) {
-      this.velocity.x = -this.velocity.x;
-      this.velocity.x *= 1.05;
+      this.velocity.x = -(this.velocity.x * 1.05);
     }
     return this;
   };
@@ -78,11 +77,10 @@ Ball = (function() {
   };
 
   Ball.prototype.isStillInPlayingField = function() {
-    if (this.position.x < 0 - (baseSize * 2) || this.position.x >= canvas.width + (baseSize * 2)) {
-      console.log('GAME OVER');
-      window.cancelAnimationFrame(animationLoopId);
-    }
-    return this;
+    var insideLeft, insideRight;
+    insideLeft = this.position.x > -(baseSize * 5);
+    insideRight = this.position.x + this.size < canvas.width + (baseSize * 5);
+    return insideLeft && insideRight;
   };
 
   Ball.prototype.update = function() {
@@ -91,6 +89,9 @@ Ball = (function() {
       this.position.x += calcSpeed(this.velocity.x);
       this.detectCollisionWithCeilingOrFloor();
       this.position.y += calcSpeed(this.velocity.y);
+    } else {
+      console.log('GAME OVER');
+      window.cancelAnimationFrame(animationLoopId);
     }
     return this;
   };
@@ -231,15 +232,14 @@ randomInteger = function(min, max) {
 */
 
 
-lastTime = 0;
-
 delta = 0;
 
+fpsOutput = document.querySelector('.fps');
+
+lastTime = 0;
+
 animationLoop = function(now) {
-  var animationLoopId, fps;
-  if (now == null) {
-    now = 0;
-  }
+  var fps;
   delta = now - lastTime;
   lastTime = now;
   fps = Math.round(1000 / delta);
@@ -249,17 +249,11 @@ animationLoop = function(now) {
   headsUp.draw();
   playerOne.draw();
   playerTwo.draw();
-  if (gamePaused) {
-    window.setTimeout(function() {
-      var gamePaused;
-      gamePaused = false;
-      ball.update();
-      headsUp.update();
-      playerOne.update();
-      return playerTwo.update();
-    }, 2000);
-  }
-  animationLoopId = window.requestAnimationFrame(animationLoop);
+  ball.update();
+  headsUp.update();
+  playerOne.update();
+  playerTwo.update();
+  window.requestAnimationFrame(animationLoop);
 };
 
 calcSpeed = function(speed) {
@@ -268,14 +262,16 @@ calcSpeed = function(speed) {
 
 controlCallback = function(t, a, controlIndex, value) {
   var paddle;
-  value /= 128;
   if (controlIndex === 3 || controlIndex === 14) {
     paddle = playerOne;
   }
   if (controlIndex === 11 || controlIndex === 22) {
     paddle = playerTwo;
   }
-  paddle.newPositionY = -(value - 1);
+  if (paddle) {
+    value /= 128;
+    paddle.newPositionY = -(value - 1);
+  }
 };
 
 document.getElementById('Jazz').MidiInOpen(0, controlCallback);
@@ -310,10 +306,4 @@ headsUp = new HeadsUp();
 
 headsUp.init();
 
-gamePaused = true;
-
-animationLoopId = null;
-
-fpsOutput = document.querySelector('.fps');
-
-animationLoop();
+animationLoopId = window.requestAnimationFrame(animationLoop);

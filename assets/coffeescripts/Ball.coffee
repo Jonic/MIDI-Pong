@@ -43,9 +43,7 @@ class Ball
 				collision = true
 
 		if collision
-		 	this.velocity.x = -this.velocity.x
-		 	this.velocity.x *= 1.05
-			#this.setNewVelocityX(ballX, paddleX)
+			this.velocity.x = -(this.velocity.x * 1.05)
 
 		@
 
@@ -72,18 +70,21 @@ class Ball
 
 	isStillInPlayingField: ->
 
-		if this.position.x < 0 - (baseSize * 2) or this.position.x >= canvas.width + (baseSize * 2)
-			console.log('GAME OVER')
-			window.cancelAnimationFrame(animationLoopId)
+		insideLeft  = this.position.x > -(baseSize * 5)
+		insideRight = this.position.x + this.size < canvas.width + (baseSize * 5)
 
-		@
+		return insideLeft and insideRight
 
 	update: ->
+
 		if this.isStillInPlayingField()
 			this.detectCollisionWithPaddle()
 			this.position.x += calcSpeed(this.velocity.x)
 
 			this.detectCollisionWithCeilingOrFloor()
 			this.position.y += calcSpeed(this.velocity.y)
+		else
+			console.log('GAME OVER')
+			window.cancelAnimationFrame(animationLoopId)
 
 		@
