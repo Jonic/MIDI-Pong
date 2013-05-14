@@ -4,12 +4,17 @@ animationLoop = ->
 
 	animationLoopId = window.requestAnimationFrame(animationLoop)
 
-	context.clearRect(0, 0, canvas.width, canvas.height)
+	canvas.width = canvas.width
 
-	playerOne.update()
-	playerTwo.update()
+	ball.draw()
+	headsUp.draw()
+	playerOne.draw()
+	playerTwo.draw()
 
 	ball.update()
+	headsUp.update()
+	playerOne.update()
+	playerTwo.update()
 
 	return
 
@@ -42,13 +47,20 @@ canvas.height = document.body.clientHeight
 
 
 
+baseSize = Math.round(canvas.height * 0.015)
+
+
+
 ball = new Ball()
 ball.init()
 
-playerOne = new Paddle()
+playerOne = new Player()
 playerOne.init(1)
 
-playerTwo = new Paddle()
+playerTwo = new Player()
 playerTwo.init(2)
+
+headsUp = new HeadsUp()
+headsUp.init()
 
 animationLoop()

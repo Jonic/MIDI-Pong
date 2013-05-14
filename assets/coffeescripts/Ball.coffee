@@ -6,7 +6,7 @@ class Ball
 
 		this.color = 'rgb(240, 240, 240)'
 
-		this.size = 20
+		this.size = baseSize
 		this.half = this.size / 2
 
 		this.position =
@@ -17,11 +17,11 @@ class Ball
 		this.maxVelocity = 20
 
 		this.velocity =
-			x: 3
-			y: 4
+			x: Math.random() * 5 -10
+			y: Math.random() * 5 -10
 
-		this.directionX = 'right'
-		this.directionY = 'down'
+		this.directionX = if this.velocity.x < 0 then 'left' else 'right'
+		this.directionY = if this.velocity.y < 0 then 'up'   else 'down'
 
 		@
 
@@ -70,18 +70,21 @@ class Ball
 
 		@
 
-	update: ->
-
-		this.detectCollisionWithPaddle()
-		this.position.x += this.velocity.x
-
-		this.detectCollisionWithCeilingOrFloor()
-		this.position.y += this.velocity.y
+	isStillInPlayingField: ->
 
 		if this.position.x < 0 - this.half or this.position.x >= canvas.width + this.half
 			console.log('GAME OVER')
 			window.cancelAnimationFrame(animationLoopId)
 
-		this.draw()
+		@
+
+	update: ->
+
+		if this.isStillInPlayingField()
+			this.detectCollisionWithPaddle()
+			this.position.x += this.velocity.x
+
+			this.detectCollisionWithCeilingOrFloor()
+			this.position.y += this.velocity.y
 
 		@

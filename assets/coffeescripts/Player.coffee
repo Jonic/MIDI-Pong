@@ -1,19 +1,19 @@
-class Paddle
+class Player
 
-	init: (player) ->
+	init: (playerNumber) ->
 
 		self = this
 
-		this.player = player
+		this.playerNumber = playerNumber
 
 		this.color = 'rgb(240, 240, 240)'
 		this.direction = false
 
-		this.width = 20
-		this.height = 150
+		this.height = baseSize * 8
+		this.width = baseSize
 
 		this.position =
-			x: if this.player == 1 then 20 else canvas.width - 20 - this.width
+			x: if this.playerNumber == 1 then 20 else canvas.width - 20 - this.width
 			y: (canvas.height / 2) - (this.height / 2)
 
 		this.animateTo = this.position
@@ -38,7 +38,5 @@ class Paddle
 			console.log(this.newPositionY);
 
 		this.position.y = this.maxPositionY * this.newPositionY
-
-		this.draw()
 
 		@
