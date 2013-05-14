@@ -13,17 +13,39 @@ class Ball
 			x: (canvas.width  / 2) - this.half
 			y: (canvas.height / 2) - this.half
 
-		this.minVelocity = 10
-		this.maxVelocity = 20
+		velocityMin = -10
+		velocityMax = 10
 
 		this.velocity =
-			x: Math.random() * 5 -10
-			y: Math.random() * 5 -10
+			x: (Math.random() * (velocityMax - velocityMin)) + velocityMin;
+			y: (Math.random() * (velocityMax - velocityMin)) + velocityMin;
 
-		this.directionX = if this.velocity.x < 0 then 'left' else 'right'
-		this.directionY = if this.velocity.y < 0 then 'up'   else 'down'
+		this.correctVelocity()
 
 		@
+
+	correctVelocity: ->
+
+		speedThreshold = 5
+
+		if this.velocity.x < 0
+			this.directionX = 'left'
+
+			if this.velocity.x > -speedThreshold
+				this.velocity.x = -speedThreshold
+		else
+			this.directionX = 'right'
+			if this.velocity.x < speedThreshold
+				this.velocity.x = speedThreshold
+
+		if this.velocity.y < 0
+			this.directionY = 'up'
+			if this.velocity.y > -speedThreshold
+				this.velocity.y = -speedThreshold
+		else
+			this.directionY = 'down'
+			if this.velocity.y < speedThreshold
+				this.velocity.y = speedThreshold
 
 	detectCollisionWithPaddle: ->
 
@@ -84,7 +106,22 @@ class Ball
 			this.detectCollisionWithCeilingOrFloor()
 			this.position.y += calcSpeed(this.velocity.y)
 		else
+			this.updateScoreStates()
+			this.init()
+
+		if playerOne.score == 3 or playerTwo == 3
 			console.log('GAME OVER')
 			window.cancelAnimationFrame(animationLoopId)
+
+		@
+
+	updateScoreStates: ->
+
+		outsideLeft = this.position.x < -(baseSize * 5)
+
+		if outsideLeft
+			playerTwo.score += 1
+		else
+			playerOne.score += 1
 
 		@

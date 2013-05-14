@@ -12,7 +12,7 @@ Ball = (function() {
   function Ball() {}
 
   Ball.prototype.init = function() {
-    var self;
+    var self, velocityMax, velocityMin;
     self = this;
     this.color = 'rgb(240, 240, 240)';
     this.size = baseSize;
@@ -21,15 +21,41 @@ Ball = (function() {
       x: (canvas.width / 2) - this.half,
       y: (canvas.height / 2) - this.half
     };
-    this.minVelocity = 10;
-    this.maxVelocity = 20;
+    velocityMin = -10;
+    velocityMax = 10;
     this.velocity = {
-      x: Math.random() * 5 - 10,
-      y: Math.random() * 5 - 10
+      x: (Math.random() * (velocityMax - velocityMin)) + velocityMin,
+      y: (Math.random() * (velocityMax - velocityMin)) + velocityMin
     };
-    this.directionX = this.velocity.x < 0 ? 'left' : 'right';
-    this.directionY = this.velocity.y < 0 ? 'up' : 'down';
+    this.correctVelocity();
     return this;
+  };
+
+  Ball.prototype.correctVelocity = function() {
+    var speedThreshold;
+    speedThreshold = 5;
+    if (this.velocity.x < 0) {
+      this.directionX = 'left';
+      if (this.velocity.x > -speedThreshold) {
+        this.velocity.x = -speedThreshold;
+      }
+    } else {
+      this.directionX = 'right';
+      if (this.velocity.x < speedThreshold) {
+        this.velocity.x = speedThreshold;
+      }
+    }
+    if (this.velocity.y < 0) {
+      this.directionY = 'up';
+      if (this.velocity.y > -speedThreshold) {
+        return this.velocity.y = -speedThreshold;
+      }
+    } else {
+      this.directionY = 'down';
+      if (this.velocity.y < speedThreshold) {
+        return this.velocity.y = speedThreshold;
+      }
+    }
   };
 
   Ball.prototype.detectCollisionWithPaddle = function() {
@@ -90,8 +116,23 @@ Ball = (function() {
       this.detectCollisionWithCeilingOrFloor();
       this.position.y += calcSpeed(this.velocity.y);
     } else {
+      this.updateScoreStates();
+      this.init();
+    }
+    if (playerOne.score === 3 || playerTwo === 3) {
       console.log('GAME OVER');
       window.cancelAnimationFrame(animationLoopId);
+    }
+    return this;
+  };
+
+  Ball.prototype.updateScoreStates = function() {
+    var outsideLeft;
+    outsideLeft = this.position.x < -(baseSize * 5);
+    if (outsideLeft) {
+      playerTwo.score += 1;
+    } else {
+      playerOne.score += 1;
     }
     return this;
   };
@@ -115,12 +156,13 @@ HeadsUp = (function() {
     this.netWidth = Math.round(baseSize / 2);
     this.netLineWidth = Math.round(this.netWidth / 3);
     this.netX = (canvas.width / 2) - (this.netWidth / 2);
+    this.charPatterns = [[1, 1, 1, 1, 1, 1, 0], [0, 1, 1, 0, 0, 0, 0], [1, 1, 0, 1, 1, 0, 1], [1, 1, 1, 1, 0, 0, 1], [0, 1, 1, 0, 0, 1, 1], [1, 0, 1, 1, 0, 1, 1], [1, 0, 1, 1, 1, 1, 1], [1, 1, 1, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 0, 0, 1, 1]];
     return this;
   };
 
   HeadsUp.prototype.draw = function() {
     this.drawNet();
-    this.drawScore();
+    this.drawScores();
     return this;
   };
 
@@ -141,7 +183,63 @@ HeadsUp = (function() {
     return context.stroke();
   };
 
-  HeadsUp.prototype.drawScore = function() {
+  HeadsUp.prototype.drawScores = function() {
+    var score;
+    score = '' + playerOne.score;
+    this.drawScoreCharacters(1, score);
+    score = '' + playerTwo.score;
+    this.drawScoreCharacters(2, score);
+    return this;
+  };
+
+  HeadsUp.prototype.drawScoreCharacters = function(player, score) {
+    var char, charCount, charWidth, pattern, posX, posY, scoreStartY, startX, startY, unitLong, unitShort, _i, _len, _ref;
+    charCount = score.length;
+    charWidth = baseSize * 4;
+    unitLong = baseSize * 3;
+    unitShort = baseSize;
+    startX = canvas.width / 2;
+    startY = scoreStartY = baseSize * 2;
+    if (player === 1) {
+      startX += (this.netWidth / 2) + (baseSize * 2);
+    } else {
+      startX -= (baseSize * 2) + (charWidth * charCount) - this.netWidth;
+    }
+    posX = startX;
+    posY = startY;
+    context.lineWidth = baseSize;
+    context.beginPath();
+    _ref = score.split('');
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      char = _ref[_i];
+      char = parseInt(char, 10);
+      pattern = this.charPatterns[char];
+      context.fillStyle = 'rgba(180, 180, 180, ' + pattern[0] + ')';
+      context.fillRect(posX, posY, unitLong, unitShort);
+      posY += baseSize * 2;
+      context.fillStyle = 'rgba(180, 180, 180, ' + pattern[6] + ')';
+      context.fillRect(posX, posY, unitLong, unitShort);
+      posY += baseSize * 2;
+      context.fillStyle = 'rgba(180, 180, 180, ' + pattern[3] + ')';
+      context.fillRect(posX, posY, unitLong, unitShort);
+      posX = startX;
+      posY = startY;
+      context.fillStyle = 'rgba(180, 180, 180, ' + pattern[5] + ')';
+      context.fillRect(posX, posY, unitShort, unitLong);
+      posY += baseSize * 2;
+      context.fillStyle = 'rgba(180, 180, 180, ' + pattern[4] + ')';
+      context.fillRect(posX, posY, unitShort, unitLong);
+      posX = startX + baseSize * 2;
+      posY = startY;
+      context.fillStyle = 'rgba(180, 180, 180, ' + pattern[1] + ')';
+      context.fillRect(posX, posY, unitShort, unitLong);
+      posY += baseSize * 2;
+      context.fillStyle = 'rgba(180, 180, 180, ' + pattern[2] + ')';
+      context.fillRect(posX, posY, unitShort, unitLong);
+      startX += charWidth;
+      posX = startX;
+      posY = startY;
+    }
     return this;
   };
 
@@ -190,9 +288,6 @@ Player = (function() {
   };
 
   Player.prototype.update = function() {
-    if (this.player === 1) {
-      console.log(this.newPositionY);
-    }
     this.position.y = this.maxPositionY * this.newPositionY;
     return this;
   };

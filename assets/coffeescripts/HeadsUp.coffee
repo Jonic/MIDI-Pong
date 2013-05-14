@@ -7,12 +7,25 @@ class HeadsUp
 		this.netLineWidth = Math.round(this.netWidth / 3)
 		this.netX         = (canvas.width / 2) - (this.netWidth / 2)
 
+		this.charPatterns = [
+			[1, 1, 1, 1, 1, 1, 0] # 0
+			[0, 1, 1, 0, 0, 0, 0]
+			[1, 1, 0, 1, 1, 0, 1]
+			[1, 1, 1, 1, 0, 0, 1]
+			[0, 1, 1, 0, 0, 1, 1]
+			[1, 0, 1, 1, 0, 1, 1]
+			[1, 0, 1, 1, 1, 1, 1]
+			[1, 1, 1, 0, 0, 0, 0]
+			[1, 1, 1, 1, 1, 1, 1]
+			[1, 1, 1, 0, 0, 1, 1] # 9
+		]
+
 		@
 
 	draw: ->
 
 		this.drawNet()
-		this.drawScore()
+		this.drawScores()
 
 		@
 
@@ -36,7 +49,84 @@ class HeadsUp
 		context.fill()
 		context.stroke()
 
-	drawScore: ->
+	drawScores: ->
+
+		score = '' + playerOne.score
+		this.drawScoreCharacters(1, score)
+
+		score = '' + playerTwo.score
+		this.drawScoreCharacters(2, score)
+
+		@
+
+	drawScoreCharacters: (player, score) ->
+
+		charCount = score.length
+		charWidth = baseSize * 4
+		unitLong  = baseSize * 3
+		unitShort = baseSize
+
+		startX = (canvas.width / 2)
+		startY      = scoreStartY = baseSize * 2
+
+		if player == 1
+			startX += (this.netWidth / 2) + (baseSize * 2)
+		else
+			startX -= (baseSize * 2) + (charWidth * charCount) - this.netWidth
+
+		posX = startX
+		posY = startY
+
+		context.lineWidth = baseSize
+		context.beginPath()
+
+		for char in score.split('')
+			char = parseInt(char, 10)
+			pattern = this.charPatterns[char]
+
+			# Three horizontal lines, top to bottom
+			context.fillStyle = 'rgba(180, 180, 180, ' + pattern[0] + ')'
+			context.fillRect(posX, posY, unitLong, unitShort)
+
+			posY += baseSize * 2
+
+			context.fillStyle = 'rgba(180, 180, 180, ' + pattern[6] + ')'
+			context.fillRect(posX, posY, unitLong, unitShort)
+
+			posY += baseSize * 2
+
+			context.fillStyle = 'rgba(180, 180, 180, ' + pattern[3] + ')'
+			context.fillRect(posX, posY, unitLong, unitShort)
+
+			# Two lines on left side
+			posX = startX
+			posY = startY
+
+			context.fillStyle = 'rgba(180, 180, 180, ' + pattern[5] + ')'
+			context.fillRect(posX, posY, unitShort, unitLong)
+
+			posY += baseSize * 2
+
+			context.fillStyle = 'rgba(180, 180, 180, ' + pattern[4] + ')'
+			context.fillRect(posX, posY, unitShort, unitLong)
+
+			# Two lines on right side
+			posX = startX + baseSize * 2
+			posY = startY
+
+			context.fillStyle = 'rgba(180, 180, 180, ' + pattern[1] + ')'
+			context.fillRect(posX, posY, unitShort, unitLong)
+
+			posY += baseSize * 2
+
+			context.fillStyle = 'rgba(180, 180, 180, ' + pattern[2] + ')'
+			context.fillRect(posX, posY, unitShort, unitLong)
+
+			startX += charWidth
+
+			posX = startX
+			posY = startY
+
 
 		@
 

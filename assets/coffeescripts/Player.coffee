@@ -35,9 +35,6 @@ class Player
 
 	update: ->
 
-		if this.player == 1
-			console.log(this.newPositionY);
-
 		this.position.y = this.maxPositionY * this.newPositionY
 
 		@
