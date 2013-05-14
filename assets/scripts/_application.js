@@ -5,7 +5,7 @@
 --------------------------------------------
 */
 
-var Ball, HeadsUp, Player, animationLoop, animationLoopId, ball, baseSize, canvas, context, controlCallback, controller, headsUp, playerOne, playerTwo, random, randomInteger;
+var Ball, HeadsUp, Player, animationLoop, animationLoopId, ball, baseSize, canvas, context, controlCallback, controller, gamePaused, headsUp, playerOne, playerTwo, random, randomInteger;
 
 Ball = (function() {
 
@@ -18,8 +18,8 @@ Ball = (function() {
     this.size = baseSize;
     this.half = this.size / 2;
     this.position = {
-      x: canvas.width / 2,
-      y: canvas.height / 2
+      x: (canvas.width / 2) - this.half,
+      y: (canvas.height / 2) - this.half
     };
     this.minVelocity = 10;
     this.maxVelocity = 20;
@@ -110,10 +110,37 @@ HeadsUp = (function() {
   function HeadsUp() {}
 
   HeadsUp.prototype.init = function() {
+    this.netColor = 'rgba(240, 240, 240, 0.25)';
+    this.netWidth = Math.round(baseSize / 2);
+    this.netLineWidth = Math.round(this.netWidth / 3);
+    this.netX = (canvas.width / 2) - (this.netWidth / 2);
     return this;
   };
 
   HeadsUp.prototype.draw = function() {
+    this.drawNet();
+    this.drawScore();
+    return this;
+  };
+
+  HeadsUp.prototype.drawNet = function() {
+    var netY;
+    context.fillStyle = this.netColor;
+    context.strokeStyle = this.netColor;
+    netY = 0;
+    context.lineWidth = this.netLineWidth;
+    context.beginPath();
+    while (netY < canvas.height) {
+      context.moveTo(this.netX, netY + this.netLineWidth);
+      context.lineTo(this.netX + this.netWidth, netY + this.netLineWidth);
+      netY += this.netLineWidth * 2;
+    }
+    context.closePath();
+    context.fill();
+    return context.stroke();
+  };
+
+  HeadsUp.prototype.drawScore = function() {
     return this;
   };
 
@@ -141,6 +168,7 @@ Player = (function() {
     this.playerNumber = playerNumber;
     this.color = 'rgb(240, 240, 240)';
     this.direction = false;
+    this.score = 0;
     this.height = baseSize * 8;
     this.width = baseSize;
     this.position = {
@@ -212,10 +240,16 @@ animationLoop = function() {
   headsUp.draw();
   playerOne.draw();
   playerTwo.draw();
-  ball.update();
-  headsUp.update();
-  playerOne.update();
-  playerTwo.update();
+  if (gamePaused) {
+    window.setTimeout(function() {
+      var gamePaused;
+      gamePaused = false;
+      ball.update();
+      headsUp.update();
+      playerOne.update();
+      return playerTwo.update();
+    }, 2000);
+  }
 };
 
 controlCallback = function(t, a, controlIndex, value) {
@@ -261,5 +295,7 @@ playerTwo.init(2);
 headsUp = new HeadsUp();
 
 headsUp.init();
+
+gamePaused = true;
 
 animationLoop();

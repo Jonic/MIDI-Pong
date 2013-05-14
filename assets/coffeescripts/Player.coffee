@@ -8,6 +8,7 @@ class Player
 
 		this.color = 'rgb(240, 240, 240)'
 		this.direction = false
+		this.score = 0
 
 		this.height = baseSize * 8
 		this.width = baseSize

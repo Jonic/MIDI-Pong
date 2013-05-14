@@ -10,8 +10,8 @@ class Ball
 		this.half = this.size / 2
 
 		this.position =
-			x: (canvas.width  / 2)
-			y: (canvas.height / 2)
+			x: (canvas.width  / 2) - this.half
+			y: (canvas.height / 2) - this.half
 
 		this.minVelocity = 10
 		this.maxVelocity = 20

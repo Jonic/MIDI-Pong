@@ -11,10 +11,15 @@ animationLoop = ->
 	playerOne.draw()
 	playerTwo.draw()
 
-	ball.update()
-	headsUp.update()
-	playerOne.update()
-	playerTwo.update()
+	if gamePaused
+		window.setTimeout ->
+			gamePaused = false
+
+			ball.update()
+			headsUp.update()
+			playerOne.update()
+			playerTwo.update()
+		, 2000
 
 	return
 
@@ -62,5 +67,7 @@ playerTwo.init(2)
 
 headsUp = new HeadsUp()
 headsUp.init()
+
+gamePaused = true
 
 animationLoop()
