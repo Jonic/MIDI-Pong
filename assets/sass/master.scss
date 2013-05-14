@@ -3,6 +3,8 @@
 
 html, body {
 	background: #222;
+	color: rgb(240, 240, 240);
+	font-family: sans-serif;
 	height: 100%;
 	margin: 0;
 	overflow: hidden;
@@ -21,4 +23,11 @@ object {
 	border-width: 0;
 	max-width: 0;
 	max-height: 0;
+}
+
+.fps-counter {
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	margin: 0;
 }

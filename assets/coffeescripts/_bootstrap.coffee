@@ -1,8 +1,15 @@
 animationLoopId = null
 
-animationLoop = ->
+fpsOutput = document.querySelector('.fps')
 
-	animationLoopId = window.requestAnimationFrame(animationLoop)
+lastTime = 0
+
+animationLoop = (time) ->
+
+	fps = Math.round(1000 / (time - lastTime))
+	lastTime = time;
+
+	fpsOutput.innerHTML = fps
 
 	canvas.width = canvas.width
 
@@ -20,6 +27,8 @@ animationLoop = ->
 			playerOne.update()
 			playerTwo.update()
 		, 2000
+
+	animationLoopId = window.requestAnimationFrame(animationLoop)
 
 	return
 
@@ -49,8 +58,6 @@ document.body.appendChild(canvas)
 
 canvas.width = document.body.clientWidth
 canvas.height = document.body.clientHeight
-
-
 
 baseSize = Math.round(canvas.height * 0.015)
 

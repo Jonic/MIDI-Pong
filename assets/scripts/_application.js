@@ -5,7 +5,7 @@
 --------------------------------------------
 */
 
-var Ball, HeadsUp, Player, animationLoop, animationLoopId, ball, baseSize, canvas, context, controlCallback, controller, gamePaused, headsUp, playerOne, playerTwo, random, randomInteger;
+var Ball, HeadsUp, Player, animationLoop, animationLoopId, ball, baseSize, canvas, context, controlCallback, controller, fpsOutput, gamePaused, headsUp, lastTime, playerOne, playerTwo, random, randomInteger;
 
 Ball = (function() {
 
@@ -233,8 +233,15 @@ randomInteger = function(min, max) {
 
 animationLoopId = null;
 
-animationLoop = function() {
-  animationLoopId = window.requestAnimationFrame(animationLoop);
+fpsOutput = document.querySelector('.fps');
+
+lastTime = 0;
+
+animationLoop = function(time) {
+  var fps;
+  fps = Math.round(1000 / (time - lastTime));
+  lastTime = time;
+  fpsOutput.innerHTML = fps;
   canvas.width = canvas.width;
   ball.draw();
   headsUp.draw();
@@ -250,6 +257,7 @@ animationLoop = function() {
       return playerTwo.update();
     }, 2000);
   }
+  animationLoopId = window.requestAnimationFrame(animationLoop);
 };
 
 controlCallback = function(t, a, controlIndex, value) {
