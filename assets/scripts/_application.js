@@ -5,7 +5,7 @@
 --------------------------------------------
 */
 
-var Ball, HeadsUp, Player, animationLoop, animationLoopId, ball, baseSize, canvas, context, controlCallback, controller, fpsOutput, gamePaused, headsUp, lastTime, playerOne, playerTwo, random, randomInteger;
+var Ball, HeadsUp, Player, animationLoop, animationLoopId, ball, baseSize, calcSpeed, canvas, context, controlCallback, controller, delta, fpsOutput, gamePaused, headsUp, lastTime, playerOne, playerTwo, random, randomInteger;
 
 Ball = (function() {
 
@@ -78,7 +78,7 @@ Ball = (function() {
   };
 
   Ball.prototype.isStillInPlayingField = function() {
-    if (this.position.x < 0 - this.half || this.position.x >= canvas.width + this.half) {
+    if (this.position.x < 0 - (baseSize * 2) || this.position.x >= canvas.width + (baseSize * 2)) {
       console.log('GAME OVER');
       window.cancelAnimationFrame(animationLoopId);
     }
@@ -88,9 +88,9 @@ Ball = (function() {
   Ball.prototype.update = function() {
     if (this.isStillInPlayingField()) {
       this.detectCollisionWithPaddle();
-      this.position.x += this.velocity.x;
+      this.position.x += calcSpeed(this.velocity.x);
       this.detectCollisionWithCeilingOrFloor();
-      this.position.y += this.velocity.y;
+      this.position.y += calcSpeed(this.velocity.y);
     }
     return this;
   };
@@ -231,16 +231,18 @@ randomInteger = function(min, max) {
 */
 
 
-animationLoopId = null;
-
-fpsOutput = document.querySelector('.fps');
-
 lastTime = 0;
 
-animationLoop = function(time) {
-  var fps;
-  fps = Math.round(1000 / (time - lastTime));
-  lastTime = time;
+delta = 0;
+
+animationLoop = function(now) {
+  var animationLoopId, fps;
+  if (now == null) {
+    now = 0;
+  }
+  delta = now - lastTime;
+  lastTime = now;
+  fps = Math.round(1000 / delta);
   fpsOutput.innerHTML = fps;
   canvas.width = canvas.width;
   ball.draw();
@@ -258,6 +260,10 @@ animationLoop = function(time) {
     }, 2000);
   }
   animationLoopId = window.requestAnimationFrame(animationLoop);
+};
+
+calcSpeed = function(speed) {
+  return (speed * delta) * (60 / 1000);
 };
 
 controlCallback = function(t, a, controlIndex, value) {
@@ -305,5 +311,9 @@ headsUp = new HeadsUp();
 headsUp.init();
 
 gamePaused = true;
+
+animationLoopId = null;
+
+fpsOutput = document.querySelector('.fps');
 
 animationLoop();

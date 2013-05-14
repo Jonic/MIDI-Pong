@@ -1,14 +1,12 @@
-animationLoopId = null
-
-fpsOutput = document.querySelector('.fps')
-
 lastTime = 0
+delta = 0
 
-animationLoop = (time) ->
+animationLoop = (now = 0) ->
 
-	fps = Math.round(1000 / (time - lastTime))
-	lastTime = time;
+	delta = now - lastTime;
+	lastTime = now;
 
+	fps = Math.round(1000 / delta)
 	fpsOutput.innerHTML = fps
 
 	canvas.width = canvas.width
@@ -31,6 +29,9 @@ animationLoop = (time) ->
 	animationLoopId = window.requestAnimationFrame(animationLoop)
 
 	return
+
+calcSpeed = (speed) ->
+	return (speed * delta) * (60 / 1000)
 
 controlCallback = (t, a, controlIndex, value) ->
 	value /= 128
@@ -76,5 +77,8 @@ headsUp = new HeadsUp()
 headsUp.init()
 
 gamePaused = true
+animationLoopId = null
+
+fpsOutput = document.querySelector('.fps')
 
 animationLoop()

@@ -72,19 +72,18 @@ class Ball
 
 	isStillInPlayingField: ->
 
-		if this.position.x < 0 - this.half or this.position.x >= canvas.width + this.half
+		if this.position.x < 0 - (baseSize * 2) or this.position.x >= canvas.width + (baseSize * 2)
 			console.log('GAME OVER')
 			window.cancelAnimationFrame(animationLoopId)
 
 		@
 
 	update: ->
-
 		if this.isStillInPlayingField()
 			this.detectCollisionWithPaddle()
-			this.position.x += this.velocity.x
+			this.position.x += calcSpeed(this.velocity.x)
 
 			this.detectCollisionWithCeilingOrFloor()
-			this.position.y += this.velocity.y
+			this.position.y += calcSpeed(this.velocity.y)
 
 		@
