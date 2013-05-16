@@ -2,25 +2,25 @@ class HeadsUp
 
 	init: ->
 
-		this.netColor     = 'rgba(240, 240, 240, 0.25)'
-		this.netWidth     = Math.round(baseSize / 2)
+		this.netColor  = 'rgba(240, 240, 240, 0.25)'
+		this.netWidth  = Math.round(baseSize / 2)
+		this.netWidth += 1 if this.netWidth % 2
 
-		if this.netWidth % 2
-			this.netWidth += 1
+		this.netLineWidth  = Math.round(this.netWidth / 4)
+		this.netLineWidth += 1 if this.netLineWidth % 2
 
-		this.netLineWidth = Math.round(this.netWidth / 4)
-		this.netX         = (canvas.width / 2) - (this.netWidth / 2)
+		this.netX = Math.round((canvas.width / 2) - (this.netWidth / 2))
 
 		this.charPatterns = [
 			[1, 1, 1, 1, 1, 1, 0] # 0
-			[0, 1, 1, 0, 0, 0, 0]
-			[1, 1, 0, 1, 1, 0, 1]
-			[1, 1, 1, 1, 0, 0, 1]
-			[0, 1, 1, 0, 0, 1, 1]
-			[1, 0, 1, 1, 0, 1, 1]
-			[1, 0, 1, 1, 1, 1, 1]
-			[1, 1, 1, 0, 0, 0, 0]
-			[1, 1, 1, 1, 1, 1, 1]
+			[0, 1, 1, 0, 0, 0, 0] # 1
+			[1, 1, 0, 1, 1, 0, 1] # 2
+			[1, 1, 1, 1, 0, 0, 1] # 3
+			[0, 1, 1, 0, 0, 1, 1] # 4
+			[1, 0, 1, 1, 0, 1, 1] # 5
+			[1, 0, 1, 1, 1, 1, 1] # 6
+			[1, 1, 1, 0, 0, 0, 0] # 7
+			[1, 1, 1, 1, 1, 1, 1] # 8
 			[1, 1, 1, 0, 0, 1, 1] # 9
 		]
 
@@ -83,8 +83,6 @@ class HeadsUp
 		posX = startX
 		posY = startY
 
-		console.log(posX, posY)
-
 		for char in score.split('')
 			char = parseInt(char, 10)
 			pattern = this.charPatterns[char]
@@ -131,9 +129,5 @@ class HeadsUp
 
 			posX = startX
 			posY = startY
-
-		@
-
-	update: ->
 
 		@

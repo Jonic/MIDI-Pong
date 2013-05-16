@@ -158,7 +158,10 @@ HeadsUp = (function() {
       this.netWidth += 1;
     }
     this.netLineWidth = Math.round(this.netWidth / 4);
-    this.netX = (canvas.width / 2) - (this.netWidth / 2);
+    if (this.netLineWidth % 2) {
+      this.netLineWidth += 1;
+    }
+    this.netX = Math.round((canvas.width / 2) - (this.netWidth / 2));
     this.charPatterns = [[1, 1, 1, 1, 1, 1, 0], [0, 1, 1, 0, 0, 0, 0], [1, 1, 0, 1, 1, 0, 1], [1, 1, 1, 1, 0, 0, 1], [0, 1, 1, 0, 0, 1, 1], [1, 0, 1, 1, 0, 1, 1], [1, 0, 1, 1, 1, 1, 1], [1, 1, 1, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 0, 0, 1, 1]];
     return this;
   };
@@ -211,7 +214,6 @@ HeadsUp = (function() {
     startX = Math.round(startX);
     posX = startX;
     posY = startY;
-    console.log(posX, posY);
     _ref = score.split('');
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       char = _ref[_i];
@@ -243,10 +245,6 @@ HeadsUp = (function() {
       posX = startX;
       posY = startY;
     }
-    return this;
-  };
-
-  HeadsUp.prototype.update = function() {
     return this;
   };
 
@@ -350,7 +348,6 @@ animationLoop = function(now) {
   playerOne.draw();
   playerTwo.draw();
   ball.update();
-  headsUp.update();
   playerOne.update();
   playerTwo.update();
   window.requestAnimationFrame(animationLoop);

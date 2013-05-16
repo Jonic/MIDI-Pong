@@ -19,7 +19,6 @@ animationLoop = (now) ->
 	playerTwo.draw()
 
 	ball.update()
-	headsUp.update()
 	playerOne.update()
 	playerTwo.update()
 
@@ -57,10 +56,8 @@ document.body.appendChild(canvas)
 canvas.width = document.body.clientWidth
 canvas.height = document.body.clientHeight
 
-baseSize = Math.round(canvas.height * 0.015)
-
-if baseSize % 2
-	baseSize += 1
+baseSize  = Math.round(canvas.height * 0.015)
+baseSize += 1 if baseSize % 2
 
 
 
