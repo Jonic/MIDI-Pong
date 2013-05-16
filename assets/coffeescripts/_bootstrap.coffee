@@ -59,6 +59,9 @@ canvas.height = document.body.clientHeight
 
 baseSize = Math.round(canvas.height * 0.015)
 
+if baseSize % 2
+	baseSize += 1
+
 
 
 ball = new Ball()

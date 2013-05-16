@@ -21,8 +21,8 @@ Ball = (function() {
       x: (canvas.width / 2) - this.half,
       y: (canvas.height / 2) - this.half
     };
-    velocityMin = -10;
-    velocityMax = 10;
+    velocityMin = -15;
+    velocityMax = 15;
     this.velocity = {
       x: (Math.random() * (velocityMax - velocityMin)) + velocityMin,
       y: (Math.random() * (velocityMax - velocityMin)) + velocityMin
@@ -154,7 +154,10 @@ HeadsUp = (function() {
   HeadsUp.prototype.init = function() {
     this.netColor = 'rgba(240, 240, 240, 0.25)';
     this.netWidth = Math.round(baseSize / 2);
-    this.netLineWidth = Math.round(this.netWidth / 3);
+    if (this.netWidth % 2) {
+      this.netWidth += 1;
+    }
+    this.netLineWidth = Math.round(this.netWidth / 4);
     this.netX = (canvas.width / 2) - (this.netWidth / 2);
     this.charPatterns = [[1, 1, 1, 1, 1, 1, 0], [0, 1, 1, 0, 0, 0, 0], [1, 1, 0, 1, 1, 0, 1], [1, 1, 1, 1, 0, 0, 1], [0, 1, 1, 0, 0, 1, 1], [1, 0, 1, 1, 0, 1, 1], [1, 0, 1, 1, 1, 1, 1], [1, 1, 1, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 0, 0, 1, 1]];
     return this;
@@ -198,17 +201,17 @@ HeadsUp = (function() {
     charWidth = baseSize * 4;
     unitLong = baseSize * 3;
     unitShort = baseSize;
-    startX = canvas.width / 2;
-    startY = scoreStartY = baseSize * 2;
+    startX = Math.round(canvas.width / 2);
+    startY = Math.round(scoreStartY = baseSize * 2);
     if (player === 1) {
-      startX += (this.netWidth / 2) + (baseSize * 2);
-    } else {
       startX -= (baseSize * 2) + (charWidth * charCount) - this.netWidth;
+    } else {
+      startX += (this.netWidth / 2) + (baseSize * 2);
     }
+    startX = Math.round(startX);
     posX = startX;
     posY = startY;
-    context.lineWidth = baseSize;
-    context.beginPath();
+    console.log(posX, posY);
     _ref = score.split('');
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       char = _ref[_i];
@@ -386,6 +389,10 @@ canvas.width = document.body.clientWidth;
 canvas.height = document.body.clientHeight;
 
 baseSize = Math.round(canvas.height * 0.015);
+
+if (baseSize % 2) {
+  baseSize += 1;
+}
 
 ball = new Ball();
 

@@ -13,8 +13,8 @@ class Ball
 			x: (canvas.width  / 2) - this.half
 			y: (canvas.height / 2) - this.half
 
-		velocityMin = -10
-		velocityMax = 10
+		velocityMin = -15
+		velocityMax = 15
 
 		this.velocity =
 			x: (Math.random() * (velocityMax - velocityMin)) + velocityMin;

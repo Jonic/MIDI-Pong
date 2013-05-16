@@ -4,7 +4,11 @@ class HeadsUp
 
 		this.netColor     = 'rgba(240, 240, 240, 0.25)'
 		this.netWidth     = Math.round(baseSize / 2)
-		this.netLineWidth = Math.round(this.netWidth / 3)
+
+		if this.netWidth % 2
+			this.netWidth += 1
+
+		this.netLineWidth = Math.round(this.netWidth / 4)
 		this.netX         = (canvas.width / 2) - (this.netWidth / 2)
 
 		this.charPatterns = [
@@ -66,19 +70,20 @@ class HeadsUp
 		unitLong  = baseSize * 3
 		unitShort = baseSize
 
-		startX = (canvas.width / 2)
-		startY      = scoreStartY = baseSize * 2
+		startX = Math.round((canvas.width / 2))
+		startY = Math.round(scoreStartY = baseSize * 2)
 
 		if player == 1
-			startX += (this.netWidth / 2) + (baseSize * 2)
-		else
 			startX -= (baseSize * 2) + (charWidth * charCount) - this.netWidth
+		else
+			startX += (this.netWidth / 2) + (baseSize * 2)
+
+		startX = Math.round(startX)
 
 		posX = startX
 		posY = startY
 
-		context.lineWidth = baseSize
-		context.beginPath()
+		console.log(posX, posY)
 
 		for char in score.split('')
 			char = parseInt(char, 10)
@@ -126,7 +131,6 @@ class HeadsUp
 
 			posX = startX
 			posY = startY
-
 
 		@
 
