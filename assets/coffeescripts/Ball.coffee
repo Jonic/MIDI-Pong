@@ -47,6 +47,8 @@ class Ball
 			if this.velocity.y < speedThreshold
 				this.velocity.y = speedThreshold
 
+		@
+
 	detectCollisionWithPaddle: ->
 
 		if this.directionX == 'left' and this.position.x <= playerOne.position.x + playerOne.width

@@ -53,6 +53,8 @@ class HeadsUp
 		context.fill()
 		context.stroke()
 
+		@
+
 	drawScores: ->
 
 		score = '' + playerOne.score
