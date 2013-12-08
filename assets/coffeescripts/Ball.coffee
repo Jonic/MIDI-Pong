@@ -111,7 +111,7 @@ class Ball
 			this.updateScoreStates()
 			this.init()
 
-		if playerOne.score == pointsToWin or playerTwo == pointsToWin
+		if playerOne.score == pointsToWin or playerTwo.score == pointsToWin
 			console.log('GAME OVER')
 			window.cancelAnimationFrame(animationLoopId)
 
