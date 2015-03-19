@@ -9,7 +9,7 @@
 	</head>
 
 	<body>
-		<h1 class="fps-counter"><span class="fps">0</span>FPS</h1>
+		<p class="fps-counter"><span class="fps">0</span>FPS</p>
 		<script src="/public/scripts/application.js"></script>
 	</body>
 </html>

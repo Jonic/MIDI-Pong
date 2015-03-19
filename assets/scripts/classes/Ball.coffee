@@ -2,27 +2,29 @@ class Ball
 
   constructor: ->
 
-    self = this
-
     @color = 'rgb(240, 240, 240)'
 
     @size = baseSize
     @half = @size / 2
 
+    @velocityMin = -15
+    @velocityMax = 15
+
+    @reset()
+
+    @
+
+  reset: ->
+
     @position =
       x: (canvas.width  / 2) - @half
       y: (canvas.height / 2) - @half
 
-    velocityMin = -15
-    velocityMax = 15
-
     @velocity =
-      x: (Math.random() * (velocityMax - velocityMin)) + velocityMin;
-      y: (Math.random() * (velocityMax - velocityMin)) + velocityMin;
+      x: (Math.random() * (@velocityMax - @velocityMin)) + @velocityMin
+      y: (Math.random() * (@velocityMax - @velocityMin)) + @velocityMin
 
     @correctVelocity()
-
-    @
 
   correctVelocity: ->
 
@@ -30,44 +32,38 @@ class Ball
 
     if @velocity.x < 0
       @directionX = 'left'
-
-      if @velocity.x > -speedThreshold
-        @velocity.x = -speedThreshold
+      @velocity.x = -speedThreshold if @velocity.x > -speedThreshold
     else
       @directionX = 'right'
-      if @velocity.x < speedThreshold
-        @velocity.x = speedThreshold
+      @velocity.x = speedThreshold if @velocity.x < speedThreshold
 
     if @velocity.y < 0
       @directionY = 'up'
-      if @velocity.y > -speedThreshold
-        @velocity.y = -speedThreshold
+      @velocity.y = -speedThreshold if @velocity.y > -speedThreshold
     else
       @directionY = 'down'
-      if @velocity.y < speedThreshold
-        @velocity.y = speedThreshold
+      @velocity.y = speedThreshold if @velocity.y < speedThreshold
 
     @
 
   detectCollisionWithPaddle: ->
 
     if @directionX == 'left' and @position.x <= playerOne.position.x + playerOne.width
-      ballY = @position.y
+      ballY   = @position.y
       paddleY = playerOne.position.y
 
       if ballY >= paddleY and ballY <= (paddleY + playerOne.height)
         @directionX = 'right'
-        collision = true
+        collision   = true
     else if (@position.x + @size) >= playerTwo.position.x
-      ballY = @position.y
+      ballY   = @position.y
       paddleY = playerTwo.position.y
 
       if ballY >= paddleY and ballY <= (paddleY + playerTwo.height)
         @directionX = 'left'
-        collision = true
+        collision   = true
 
-    if collision
-      @velocity.x = -(@velocity.x * 1.05)
+    @velocity.x = -(@velocity.x * 1.05) if collision
 
     @
 
@@ -75,13 +71,12 @@ class Ball
 
     if @directionY == 'up' and @position.y <= 0
       @directionY = 'down'
-      collision = true
+      collision   = true
     else if @position.y >= canvas.height - @size
       @directionY = 'up'
-      collision = true
+      collision   = true
 
-    if collision
-      @velocity.y = -@velocity.y
+    @velocity.y = -@velocity.y if collision
 
     @
 
@@ -97,7 +92,7 @@ class Ball
     insideLeft  = @position.x > -(baseSize * 5)
     insideRight = @position.x + @size < canvas.width + (baseSize * 5)
 
-    return insideLeft and insideRight
+    return insideLeft && insideRight
 
   update: ->
 
@@ -109,7 +104,7 @@ class Ball
       @position.y += calcSpeed(@velocity.y)
     else
       @updateScoreStates()
-      @constructor()
+      @reset()
 
     playerOneWins = playerOne.score == pointsToWin
     playerTwoWins = playerTwo.score == pointsToWin

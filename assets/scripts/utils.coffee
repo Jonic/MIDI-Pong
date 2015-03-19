@@ -1,7 +1,9 @@
 
 calcSpeed = (speed) ->
 
-  (speed * delta) * (60 / 1000)
+  newSpeed = (speed * delta) * (60 / 1000)
+
+  return newSpeed
 
 random = (min, max) ->
 

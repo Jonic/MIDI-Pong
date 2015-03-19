@@ -1,6 +1,6 @@
 delta       = 0
 fpsOutput   = document.querySelector('.fps')
-lastTime    = 0
+lastTime    = Date.now()
 pointsToWin = 15
 
 canvasHelper = new CanvasHelper()
@@ -36,25 +36,26 @@ navigator.requestMIDIAccess().then (midiAccess) ->
         value /= 128
         paddle.newPositionY = -(value - 1)
 
-animationLoop = (now) =>
+animationLoop = =>
 
+  now      = Date.now()
   delta    = now - lastTime
   fps      = Math.round(1000 / delta)
   lastTime = now
 
   fpsOutput.innerHTML = fps
 
+  playerOne.update()
+  playerTwo.update()
+  ball.update()
+
   #context.clearRect(0, 0, canvas.width, canvas.height)
   canvas.width = canvas.width
 
-  ball.draw()
+  headsUp.draw()
   playerOne.draw()
   playerTwo.draw()
-  headsUp.draw()
-
-  ball.update()
-  playerOne.update()
-  playerTwo.update()
+  ball.draw()
 
   window.requestAnimationFrame(animationLoop)
 
