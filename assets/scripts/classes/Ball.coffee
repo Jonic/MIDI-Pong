@@ -1,129 +1,133 @@
 class Ball
 
-	constructor: ->
+  constructor: ->
 
-		self = this
+    self = this
 
-		this.color = 'rgb(240, 240, 240)'
+    @color = 'rgb(240, 240, 240)'
 
-		this.size = baseSize
-		this.half = this.size / 2
+    @size = baseSize
+    @half = @size / 2
 
-		this.position =
-			x: (canvas.width  / 2) - this.half
-			y: (canvas.height / 2) - this.half
+    @position =
+      x: (canvas.width  / 2) - @half
+      y: (canvas.height / 2) - @half
 
-		velocityMin = -15
-		velocityMax = 15
+    velocityMin = -15
+    velocityMax = 15
 
-		this.velocity =
-			x: (Math.random() * (velocityMax - velocityMin)) + velocityMin;
-			y: (Math.random() * (velocityMax - velocityMin)) + velocityMin;
+    @velocity =
+      x: (Math.random() * (velocityMax - velocityMin)) + velocityMin;
+      y: (Math.random() * (velocityMax - velocityMin)) + velocityMin;
 
-		this.correctVelocity()
+    @correctVelocity()
 
-		@
+    @
 
-	correctVelocity: ->
+  correctVelocity: ->
 
-		speedThreshold = 5
+    speedThreshold = 5
 
-		if this.velocity.x < 0
-			this.directionX = 'left'
+    if @velocity.x < 0
+      @directionX = 'left'
 
-			if this.velocity.x > -speedThreshold
-				this.velocity.x = -speedThreshold
-		else
-			this.directionX = 'right'
-			if this.velocity.x < speedThreshold
-				this.velocity.x = speedThreshold
+      if @velocity.x > -speedThreshold
+        @velocity.x = -speedThreshold
+    else
+      @directionX = 'right'
+      if @velocity.x < speedThreshold
+        @velocity.x = speedThreshold
 
-		if this.velocity.y < 0
-			this.directionY = 'up'
-			if this.velocity.y > -speedThreshold
-				this.velocity.y = -speedThreshold
-		else
-			this.directionY = 'down'
-			if this.velocity.y < speedThreshold
-				this.velocity.y = speedThreshold
+    if @velocity.y < 0
+      @directionY = 'up'
+      if @velocity.y > -speedThreshold
+        @velocity.y = -speedThreshold
+    else
+      @directionY = 'down'
+      if @velocity.y < speedThreshold
+        @velocity.y = speedThreshold
 
-		@
+    @
 
-	detectCollisionWithPaddle: ->
+  detectCollisionWithPaddle: ->
 
-		if this.directionX == 'left' and this.position.x <= playerOne.position.x + playerOne.width
-			ballY = this.position.y
-			paddleY = playerOne.position.y
+    if @directionX == 'left' and @position.x <= playerOne.position.x + playerOne.width
+      ballY = @position.y
+      paddleY = playerOne.position.y
 
-			if ballY >= paddleY and ballY <= (paddleY + playerOne.height)
-				this.directionX = 'right'
-				collision = true
-		else if (this.position.x + this.size) >= playerTwo.position.x
-			ballY = this.position.y
-			paddleY = playerTwo.position.y
+      if ballY >= paddleY and ballY <= (paddleY + playerOne.height)
+        @directionX = 'right'
+        collision = true
+    else if (@position.x + @size) >= playerTwo.position.x
+      ballY = @position.y
+      paddleY = playerTwo.position.y
 
-			if ballY >= paddleY and ballY <= (paddleY + playerTwo.height)
-				this.directionX = 'left'
-				collision = true
+      if ballY >= paddleY and ballY <= (paddleY + playerTwo.height)
+        @directionX = 'left'
+        collision = true
 
-		if collision
-			this.velocity.x = -(this.velocity.x * 1.05)
+    if collision
+      @velocity.x = -(@velocity.x * 1.05)
 
-		@
+    @
 
-	detectCollisionWithCeilingOrFloor: ->
+  detectCollisionWithCeilingOrFloor: ->
 
-		if this.directionY == 'up' and this.position.y <= 0
-			this.directionY = 'down'
-			collision = true
-		else if this.position.y >= canvas.height - this.size
-			this.directionY = 'up'
-			collision = true
+    if @directionY == 'up' and @position.y <= 0
+      @directionY = 'down'
+      collision = true
+    else if @position.y >= canvas.height - @size
+      @directionY = 'up'
+      collision = true
 
-		if collision
-		 	this.velocity.y = -this.velocity.y
+    if collision
+      @velocity.y = -@velocity.y
 
-		@
+    @
 
-	draw: ->
+  draw: ->
 
-		context.fillStyle = this.color
-		context.fillRect(this.position.x, this.position.y, this.size, this.size)
+    context.fillStyle = @color
+    context.fillRect(@position.x, @position.y, @size, @size)
 
-		@
+    @
 
-	isStillInPlayingField: ->
+  isStillInPlayingField: ->
 
-		insideLeft  = this.position.x > -(baseSize * 5)
-		insideRight = this.position.x + this.size < canvas.width + (baseSize * 5)
+    insideLeft  = @position.x > -(baseSize * 5)
+    insideRight = @position.x + @size < canvas.width + (baseSize * 5)
 
-		return insideLeft and insideRight
+    return insideLeft and insideRight
 
-	update: ->
+  update: ->
 
-		if this.isStillInPlayingField()
-			this.detectCollisionWithPaddle()
-			this.position.x += calcSpeed(this.velocity.x)
+    if @isStillInPlayingField()
+      @detectCollisionWithPaddle()
+      @position.x += calcSpeed(@velocity.x)
 
-			this.detectCollisionWithCeilingOrFloor()
-			this.position.y += calcSpeed(this.velocity.y)
-		else
-			this.updateScoreStates()
-			this.init()
+      @detectCollisionWithCeilingOrFloor()
+      @position.y += calcSpeed(@velocity.y)
+    else
+      @updateScoreStates()
+      @constructor()
 
-		if playerOne.score == pointsToWin or playerTwo.score == pointsToWin
-			console.log('GAME OVER')
-			window.cancelAnimationFrame(animationLoopId)
+    playerOneWins = playerOne.score == pointsToWin
+    playerTwoWins = playerTwo.score == pointsToWin
 
-		@
+    if playerOneWins || playerTwoWins
+      winner = if playerOneWins then 'One' else 'Two'
+      alert "Player #{winner} Wins!"
+      window.cancelAnimationFrame()
 
-	updateScoreStates: ->
+    @
 
-		outsideLeft = this.position.x < -(baseSize * 5)
+  updateScoreStates: ->
 
-		if outsideLeft
-			playerTwo.score += 1
-		else
-			playerOne.score += 1
+    outsideLeft = @position.x < -(baseSize * 5)
 
-		@
+    if outsideLeft
+      playerTwo.score += 1
+    else
+      playerOne.score += 1
+
+    @

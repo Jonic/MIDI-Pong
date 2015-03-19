@@ -1,40 +1,38 @@
 class Player
 
-	iconstructornit: (playerNumber) ->
+  constructor: (playerNumber) ->
 
-		self = this
+    @playerNumber = playerNumber
 
-		this.playerNumber = playerNumber
+    @color = 'rgb(240, 240, 240)'
+    @direction = false
+    @score = 0
 
-		this.color = 'rgb(240, 240, 240)'
-		this.direction = false
-		this.score = 0
+    @height = baseSize * 8
+    @width = baseSize
 
-		this.height = baseSize * 8
-		this.width = baseSize
+    @position =
+      x: if @playerNumber == 1 then 20 else canvas.width - 20 - @width
+      y: (canvas.height / 2) - (@height / 2)
 
-		this.position =
-			x: if this.playerNumber == 1 then 20 else canvas.width - 20 - this.width
-			y: (canvas.height / 2) - (this.height / 2)
+    @animateTo = @position
 
-		this.animateTo = this.position
+    @newPositionY = 0.5;
+    @maxPositionY = canvas.height - @height
 
-		this.newPositionY = 0.5;
-		this.maxPositionY = canvas.height - this.height
+    @velocity = 30
 
-		this.velocity = 30
+    @
 
-		@
+  draw: ->
 
-	draw: ->
+    context.fillStyle = @color
+    context.fillRect(@position.x, @position.y, @width, @height)
 
-		context.fillStyle = this.color
-		context.fillRect(this.position.x, this.position.y, this.width, this.height)
+    @
 
-		@
+  update: ->
 
-	update: ->
+    @position.y = @maxPositionY * @newPositionY
 
-		this.position.y = this.maxPositionY * this.newPositionY
-
-		@
+    @

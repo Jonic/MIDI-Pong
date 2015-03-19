@@ -23,6 +23,7 @@ var config = {
       files: {
         any:         'assets/scripts/**/*.coffee',
         utils:       'assets/scripts/utils.coffee',
+        helpers:     'assets/scripts/helpers/**/*.coffee',
         classes:     'assets/scripts/classes/**/*.coffee',
         bootstrap:   'assets/scripts/bootstrap.coffee'
       },
@@ -46,6 +47,7 @@ gulp.task('scripts', function () {
 
   return gulp.src([
       files.utils,
+      files.helpers,
       files.classes,
       files.bootstrap
     ])

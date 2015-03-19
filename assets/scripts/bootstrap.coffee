@@ -3,60 +3,59 @@ fpsOutput   = document.querySelector('.fps')
 lastTime    = 0
 pointsToWin = 15
 
-animationLoop = (now) ->
+canvasHelper = new CanvasHelper()
 
-	delta    = now - lastTime;
-	fps      = Math.round(1000 / delta)
-	lastTime = now;
-
-	fpsOutput.innerHTML = fps
-
-	canvas.width = canvas.width
-
-	ball.draw()
-	headsUp.draw()
-	playerOne.draw()
-	playerTwo.draw()
-
-	ball.update()
-	playerOne.update()
-	playerTwo.update()
-
-	window.requestAnimationFrame(animationLoop)
-
-canvas  = document.createElement('canvas')
-context = canvas.getContext('2d')
-
-document.body.appendChild(canvas)
-
-canvas.width  = document.body.clientWidth
-canvas.height = document.body.clientHeight
+canvas  = canvasHelper.element;
+context = canvasHelper.context;
 
 baseSize  = Math.round(canvas.height * 0.015)
 baseSize += 1 if baseSize % 2
 
 ball      = new Ball()
-headsUp   = new HeadsUp()
 playerOne = new Player(1)
 playerTwo = new Player(2)
+headsUp   = new HeadsUp()
 
+navigator.requestMIDIAccess().then (midiAccess) ->
+  input = midiAccess.inputs.values().next()
 
+  input.value.onmidimessage = (event) ->
+    console.log event.data
 
-controlCallback = (t, a, controlIndex, value) ->
-	if controlIndex == 3  or controlIndex == 14
-		paddle = playerOne
+    control = event.data[1]
 
-	if controlIndex == 11 or controlIndex == 22
-		paddle = playerTwo
+    if control?
+      value   = event.data[2]
 
-	if paddle
-		value /= 128
-		paddle.newPositionY = -(value - 1)
+      console.log(control, value);
 
-	return
+      paddle = playerOne if control == 3  || control == 14
+      paddle = playerTwo if control == 11 || control == 22
 
-document.getElementById('Jazz').MidiInOpen(0, controlCallback)
+      if paddle
+        value /= 128
+        paddle.newPositionY = -(value - 1)
 
-controller = new Option(' ', ' ', true, true)
+animationLoop = (now) =>
 
-animationLoopId = window.requestAnimationFrame(animationLoop)
+  delta    = now - lastTime
+  fps      = Math.round(1000 / delta)
+  lastTime = now
+
+  fpsOutput.innerHTML = fps
+
+  #context.clearRect(0, 0, canvas.width, canvas.height)
+  canvas.width = canvas.width
+
+  ball.draw()
+  playerOne.draw()
+  playerTwo.draw()
+  headsUp.draw()
+
+  ball.update()
+  playerOne.update()
+  playerTwo.update()
+
+  window.requestAnimationFrame(animationLoop)
+
+animationLoop()

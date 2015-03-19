@@ -9,7 +9,6 @@
 	</head>
 
 	<body>
-		<object id="Jazz" type="audio/x-jazz"></object>
 		<h1 class="fps-counter"><span class="fps">0</span>FPS</h1>
 		<script src="/public/scripts/application.js"></script>
 	</body>
