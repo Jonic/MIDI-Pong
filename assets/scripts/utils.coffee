@@ -1,3 +1,8 @@
+
+calcSpeed = (speed) ->
+
+	(speed * delta) * (60 / 1000)
+
 random = (min, max) ->
 
 	if min == undefined

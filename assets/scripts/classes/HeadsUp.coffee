@@ -1,6 +1,6 @@
 class HeadsUp
 
-	init: ->
+	constructor: ->
 
 		this.netColor  = 'rgba(240, 240, 240, 0.25)'
 		this.netWidth  = Math.round(baseSize / 2)

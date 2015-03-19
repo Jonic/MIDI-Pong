@@ -1,6 +1,6 @@
 class Player
 
-	init: (playerNumber) ->
+	iconstructornit: (playerNumber) ->
 
 		self = this
 

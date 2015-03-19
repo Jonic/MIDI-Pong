@@ -1,6 +1,6 @@
 class Ball
 
-	init: ->
+	constructor: ->
 
 		self = this
 
